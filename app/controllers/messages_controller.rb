@@ -22,11 +22,11 @@ class MessagesController < ApplicationController
   end
 
   def update
-    logger.info("=============== In Update ====================")
-    logger.info("#{params.as_json}")
+    # logger.info("=============== In Update ====================")
+    # logger.info("#{params.as_json}")
     message = Message.find(params[:id])
-    logger.info("message:")
-    logger.info("#{message}")
+    # logger.info("message:")
+    # logger.info("#{message}")
 
 
     if message.update(message_params)

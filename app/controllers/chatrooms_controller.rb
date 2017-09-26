@@ -45,6 +45,15 @@ class ChatroomsController < ApplicationController
     @message = Message.new
   end
 
+  def destroy
+    logger.info("=============== In destroy ====================")
+    logger.info("#{params.as_json}")
+    @chatroom = Chatroom.find_by(slug: params[:slug])
+    @chatroom.destroy
+ 
+    redirect_to chatrooms_path
+  end
+
   private
 
     def chatroom_params

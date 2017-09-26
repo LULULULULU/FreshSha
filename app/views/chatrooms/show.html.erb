@@ -12,17 +12,20 @@
   <%end%>
 </div>
 
+<%= link_to 'Destroy', chatroom_path(@chatroom),
+              method: :delete,
+              data: { confirm: 'Are you sure?' } %>
 
 <button type="button" id="redeal" class="btn btn-primary">重新发牌</button>
 <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
 
-<button type="button" id="identity" class="btn btn-primary">身份配置</button>
-<button type="button" id="identity" class="btn btn-primary">使用技能</button>
+<button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
+<button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
 
   <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
 
 <div>
-  <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
+  
 </div>
 
 </div>
