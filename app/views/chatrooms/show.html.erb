@@ -2,9 +2,9 @@
   <h1><%= @chatroom.topic %></h1>
 
 <div class="panel panel-default" id="info-panel">
-  <% if @display_message.any? %>
+  <% if @chatroom_message.any? %>
     <div class="panel-body" id="messages">
-      <%= render partial: 'messages/message', collection: @display_message%>
+      <%= render partial: 'messages/message', collection: @chatroom_message%>
     </div>
   <%else%>
     <div class="panel-body hidden" id="messages">
@@ -16,5 +16,13 @@
 <button type="button" id="redeal" class="btn btn-primary">重新发牌</button>
 <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
 
+<button type="button" id="identity" class="btn btn-primary">身份配置</button>
+<button type="button" id="identity" class="btn btn-primary">使用技能</button>
+
   <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
+
+<div>
+  <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
+</div>
+
 </div>
