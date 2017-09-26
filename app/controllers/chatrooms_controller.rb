@@ -58,6 +58,7 @@ class ChatroomsController < ApplicationController
     @chatroom = Chatroom.find_by(slug: params[:slug])
     @chatroom_message = @chatroom.messages
     @display_message = [@chatroom.messages.order('created_at').last]
+    @current_user = current_user
     @message = Message.new
   end
 

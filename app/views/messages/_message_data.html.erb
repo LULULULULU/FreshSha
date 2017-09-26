@@ -1,0 +1,7 @@
+<%=form_for current_message, remote: true, authenticity_token: true do |f|%>
+  <%= f.hidden_field :current_message_content, value: current_message.last.content %>
+  <%= f.hidden_field :current_message_id, value: current_message.last.id %>
+  <%= f.hidden_field :this_user_id, value: this_user.id %>
+  <%= f.hidden_field :this_user_name, value: this_user.username %>
+<%end%>
+

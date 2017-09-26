@@ -4,6 +4,7 @@ var gamedata = 'soemthing';
 App.messages = App.cable.subscriptions.create('MessagesChannel', {  
   received: function(data) {
     $("#messages").removeClass('hidden')
+    console.log(data)
     gamedata = JSON.parse(data.message);
     console.log(gamedata)
     return $('#messages').html(this.renderMessage(data));
