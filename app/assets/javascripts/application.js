@@ -11,9 +11,11 @@
 // about supported directives.
 //
 //= require jquery
+//= require popper
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require bootstrap
 //= require_tree ./channels
 //= require chatrooms
 // require_tree .

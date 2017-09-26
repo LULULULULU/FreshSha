@@ -25,7 +25,7 @@
   <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
 
 <div>
-  
+  <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
 </div>
 
 </div>

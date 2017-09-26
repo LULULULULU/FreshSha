@@ -4,6 +4,93 @@
       <span class="input-group-addon">topic:</span>
       <%= f.text_field :topic, class: "form-control"%>
     </div>
+    <br>
+      <ul class="list-group">
+        <li class="list-group-item">    
+          <div class="form-check form-check-inline">
+            <label class="form-check-label name-label">
+              第一夜自救 <%= f.radio_button :cure_rules, "FirstNightSave", checked: true %>
+            </label>
+
+            <label class="form-check-label name-label">
+              不可自救 <%= f.radio_button :cure_rules, "CannotSaveSelf" %>
+            </label>
+            
+            <label class="form-check-label">
+              可以自救 <%= f.radio_button :cure_rules, "CanSaveSelf" %>
+            </label>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label name-label">
+              不可和解药同夜使用 <%= f.radio_button :poison_rule, "CannotUseCurePoisonSameNight", checked: true %>
+            </label>
+
+            <label class="form-check-label">
+              可以和解药同夜使用 <%= f.radio_button :poison_rule, "CanUseCurePoisonSameNight" %>
+            </label>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div class="form-check form-check-inline">
+              <label class="form-check-label name-label">
+                同守同救算死亡 <%= f.radio_button :guard_rule, "GuardAndCuredIsDead", checked: true %>
+              </label>
+
+              <label class="form-check-label">
+                同守同救算存活 <%= f.radio_button :guard_rule, "GuardAndCuredIsAlive" %>
+              </label>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label name-label">
+              有狼必须选狼 <%= f.radio_button :thief_rule, "MustPickWerewolf", checked: true %>
+            </label>
+            
+            <label class="form-check-label">
+               随意挑选 <%= f.radio_button :thief_rule, "AllPick" %>
+             </label>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label name-label">
+              预言家 <%= f.check_box :seer %>
+            </label>
+            <label class="form-check-label name-label"> 
+              女巫 <%= f.check_box :witch %>
+            </label>
+            <label class="form-check-label name-label"> 
+              猎人 <%= f.check_box :hunter %>
+            </label>
+            <label class="form-check-label name-label">
+              守卫 <%= f.check_box :defender %>
+            </label>
+            <label class="form-check-label name-label">
+              长老 <%= f.check_box :elder %>
+            </label>
+            <label class="form-check-label name-label">
+              盗贼 <%= f.check_box :thief %>
+            </label>
+            <label class="form-check-label">
+              村民 <%= f.select :villager, (0..8) %>
+            </label>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label name-label">
+              白狼王 <%= f.check_box :whitewolf %>
+            </label>
+            <label class="form-check-label">
+              狼人 <%= f.select :werewolf, (0..8) %>
+            </label>
+          </div>
+        </li>
+      </ul>
     <%= f.submit class: "btn btn-primary", id: "create-chatroom" %>
   <% end %>
 </div>
+
