@@ -37,8 +37,8 @@ class MessagesController < ApplicationController
   end
 
   def sit
-    logger.info("=============== In sit ====================")
-    logger.info("#{params.as_json}")
+    # logger.info("=============== In sit ====================")
+    # logger.info("#{params.as_json}")
     message = Message.find(params[:seat][:message_id])
     user = current_user
     begin
@@ -69,10 +69,11 @@ class MessagesController < ApplicationController
       hash = JSON.parse(message.content)
       if hash['seats'][seat.to_s]['user'] == 'EMPTY_SEAT_USER'
         hash['seats'][seat.to_s]['user'] = user.username
+      elsif hash['seats'][seat.to_s]['user'] == user.username
+        hash['seats'][seat.to_s]['user'] = 'EMPTY_SEAT_USER'
       else
         raise Exception.new('Seat Already Taken')
       end
-      logger.info("#{hash.to_s}")
       hash.to_json
     end
 end

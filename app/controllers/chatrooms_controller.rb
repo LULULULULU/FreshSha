@@ -3,10 +3,16 @@ class ChatroomsController < ApplicationController
   def index
     @chatroom = Chatroom.new
     @chatrooms = Chatroom.all
+
+    # delete chatroom name room
+    # chatrooma = Chatroom.find_by(slug: "new")
+    # unless chatrooma.nil?
+    #   chatrooma.destroy
+    # end
   end
 
   def new
-    if request.referrer.split("/").last == "chatrooms"
+    if !request.referrer.nil? && request.referrer.split("/").last == "chatrooms"
       flash[:notice] = nil
     end
     @chatroom = Chatroom.new
@@ -17,12 +23,18 @@ class ChatroomsController < ApplicationController
   end
 
   def create
-    logger.info("=============== In create ====================")
-    logger.info("#{params.as_json}")
-
+    # logger.info("=============== In create ====================")
+    # logger.info("#{params.as_json}")
     message_content = build_first_message(params[:chatroom])
-    logger.info("#{message_content}")
-
+    # logger.info("#{message_content}")
+    if chatroom_params['topic'].strip == "new"
+      respond_to do |format|
+        flash[:notice] = {ERROR: ["new不是一个合法的名字 GG"]}
+        format.html { redirect_to new_chatroom_path }
+        format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
+      end 
+      return
+    end
     @chatroom = Chatroom.new(chatroom_params)
     if @chatroom.save
       user = User.find_by(:id => 1)
@@ -30,18 +42,18 @@ class ChatroomsController < ApplicationController
       if message.save
         respond_to do |format|
           format.html { redirect_to @chatroom }
-         format.js
+          format.js
         end
       else
         respond_to do |format|
-          flash[:notice] = {error: ["creating room failed"]}
+          flash[:notice] = {ERROR: ["创建房间失败 GG"]}
           format.html { redirect_to new_chatroom_path }
           format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
         end 
       end
     else
       respond_to do |format|
-        flash[:notice] = {error: ["a chatroom with this topic already exists"]}
+        flash[:notice] = {ERROR: ["房名空或已存在 GG"]}
         format.html { redirect_to new_chatroom_path }
         format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
       end
@@ -62,15 +74,15 @@ class ChatroomsController < ApplicationController
     @message = Message.new
 
     hash = JSON.parse(@display_message.last.content)
-    logger.info("=============== In show ====================")
-    logger.info("#{hash['seats']}")
+    # logger.info("=============== In show ====================")
+    # logger.info("#{hash['seats']}")
     @seats = build_seats_array(hash['seats'], hash['room_size'].to_i)
-    logger.info("#{@seats.to_s}")
+    # logger.info("#{@seats.to_s}")
   end
 
   def destroy
-    logger.info("=============== In destroy ====================")
-    logger.info("#{params.as_json}")
+    # logger.info("=============== In destroy ====================")
+    # logger.info("#{params.as_json}")
     @chatroom = Chatroom.find_by(slug: params[:slug])
     @chatroom.destroy
  
