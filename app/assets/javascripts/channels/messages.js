@@ -1,20 +1,25 @@
 App.messages = App.cable.subscriptions.create('MessagesChannel', {  
   received: function(data) {
     $("#messages").removeClass('hidden')
-    // console.log(data)
+    // console.log(data);
     var gamedata = JSON.parse(data.message);
-    // console.log(gamedata)
+    var data_msg_id = data.id;
+    var current_msg_id = parseInt(this.getCurrentMessageId());
 
-    previousdata = this.getCurrentRoomMessage();
-
-
-    this.updateSeats(gamedata);
-
-    return $('#messages').html(this.renderMessage(data));
+    if (data_msg_id === current_msg_id) {
+      previousdata = this.getCurrentRoomMessage();
+      this.updateSeats(gamedata);
+      return $('#messages').html(this.renderMessage(data));
+    }
+    console.log('Received msg<id='+ data_msg_id +'>, doesn\'t match current msg<id='+ current_msg_id +'>. Not updating room.');
   },
 
   renderMessage: function(data) {
     return "<p> <b>" + data.user + ": </b>" + data.message + "</p>";
+  },
+
+  getCurrentMessageId: function() {
+    return $('.data-div #message_current_message_id').val();
   },
 
   getCurrentUserId: function() {
