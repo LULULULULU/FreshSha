@@ -60,6 +60,12 @@ class ChatroomsController < ApplicationController
     @display_message = [@chatroom.messages.order('created_at').last]
     @current_user = current_user
     @message = Message.new
+
+    hash = JSON.parse(@display_message.last.content)
+    logger.info("=============== In show ====================")
+    logger.info("#{hash['seats']}")
+    @seats = build_seats_array(hash['seats'], hash['room_size'].to_i)
+    logger.info("#{@seats.to_s}")
   end
 
   def destroy
@@ -77,10 +83,19 @@ class ChatroomsController < ApplicationController
       params.require(:chatroom).permit(:topic)
     end
 
-    # { "topic"=>" asdf", "cure_rules"=>"FirstNightSave", "poison_rule"=>"CannotUseCurePoisonSameNight", "guard_rule"=>"GuardAndCuredIsDead", "thief_rule"=>"MustPickWerewolf", 
-    #   "seer"=>"1", "witch"=>"1", "hunter"=>"0", "defender"=>"0", "elder"=>"0", "thief"=>"0", "villager"=>"2", "whitewolf"=>"0", "werewolf"=>"2"}
-    #
-    #" { \"1\":{\"user\":\"xiao\", \"role\":\"seer\", \"status\":\"dead\"}, \"2\":{\"user\":\"王立凡\", \"role\":\"werewolf\"}, \"cureRule\":\"FirstNightSave\", \"turn\":\"98977\"}"
+    def build_seats_array(hash, room_size)
+      array = Array.new
+      (1..room_size).each do |i|
+        seat = Seat.new
+        seat.number = i
+        seat.user = hash[i.to_s]['user']
+        seat.role = hash[i.to_s]['role']
+        seat.status = hash[i.to_s]['status']
+        array.push(seat)
+      end
+      array
+    end
+
     def build_first_message(params)
       seer = params[:seer].to_i
       witch = params[:witch].to_i

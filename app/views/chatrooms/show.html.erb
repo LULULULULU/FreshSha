@@ -1,6 +1,14 @@
 <div class="data-div" type=hidden>
   <%= render partial: 'messages/message_data', locals: {current_message: @display_message, this_user: @current_user}%>
 </div>
+
+<div id="chatroom-errors">
+    
+</div>
+<div class="container">
+  <%= render partial: 'seats/seat', collection: @seats%>
+</div>
+
 <div class="row col-md-8 col-md-offset-2">
   <h1><%= @chatroom.topic %></h1>
 

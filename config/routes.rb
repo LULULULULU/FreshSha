@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
   get 'users/:id', to: "users#show", as: "profile"
 
+  # Skills
+  post '/skill/sit', to: "messages#sit"
+
   resources :chatrooms, param: :slug
   resources :messages
   
