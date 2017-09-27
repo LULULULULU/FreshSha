@@ -1,9 +1,11 @@
 <div class="seat-box">
-<% if seat.user == 'EMPTY_SEAT_USER' %>
-  <label id="seat-label-<%=seat.number%>">空</label>
-<%else%>
-  <label id="seat-label-<%=seat.number%>"><%=seat.user%></label>
-<%end%>
+
+<label id="seat-label-<%=seat.number%>">
+<% if seat.user == 'EMPTY_SEAT_USER' %>空<%else%><%=seat.user%><%end%>
+<% if true %>
+<% if seat.role == 'EMPTY_ROLE' %>(无身份)<%else%>(<%=seat.role%>)<%end%>
+<% end %>
+</label>
 <%=form_for seat, url: {action: :sit, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
   <%= f.hidden_field :seat_number, value: seat.number %>
   <%= f.hidden_field :seat_user, value: seat.user %>

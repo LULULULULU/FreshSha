@@ -6,7 +6,7 @@ $(document).on('turbolinks:load', function() {
   updateMessage();
   var gamedata = 'soemthing';
   var panel = document.getElementById('info-panel');
-  panel.style.display = 'none';
+  if (panel) {  panel.style.display = 'none'; }
 });
 
 function submitNewMessage(){

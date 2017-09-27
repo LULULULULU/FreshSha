@@ -39,17 +39,23 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
   },
 
   updateSeats: function(data) {
-    var user;
+    var user, role, roleStr;
     for(i = 1; i <= data['room_size']; i++) { 
       user = data['seats'][i]['user'];
+      role = data['seats'][i]['role'];
+      if (role === 'EMPTY_ROLE') {
+        roleStr = " (无身份)";
+      } else {
+        roleStr = ' ('+role+')';
+      }
       if (user === 'EMPTY_SEAT_USER') {
         $("#seat-"+i).addClass("btn-success");
         $("#seat-"+i).removeClass("btn-secondary");
-        $("#seat-label-"+i).html('空');
+        $("#seat-label-"+i).html('空'+roleStr);
       } else {
         $("#seat-"+i).addClass("btn-secondary");
         $("#seat-"+i).removeClass("btn-success");
-        $("#seat-label-"+i).html(user);
+        $("#seat-label-"+i).html(user+roleStr);
       }
     }
   }

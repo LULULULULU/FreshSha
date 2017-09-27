@@ -52,11 +52,37 @@ class MessagesController < ApplicationController
       end
     rescue Exception
       respond_to do |format|
-        flash[:notice] = {error: ["Seat Already Taken"]}
+        flash[:notice] = {ERROR: ["此位置有人坐了"]}
         format.html { redirect_to chatroom_path }
-        format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
+        format.js { render template: 'messages/game_error.js.erb'} 
       end
-    end 
+    end
+  end
+
+  def shuffle
+    logger.info("=============== In shuffle ====================")
+    logger.info("#{params.as_json}")
+    message = Message.find(params[:message][:message_id])
+    hash = JSON.parse(message.content)
+    if is_full_seats?(hash)
+      shuffled_roles = hash['roles'].values.shuffle
+      shuffled_roles = shuffled_roles.shuffle
+      logger.info("#{shuffled_roles}")
+      content = update_user_roles(hash, shuffled_roles)
+      if message.update(content: content)
+        ActionCable.server.broadcast 'messages',
+          message: message.content,
+          id: message.id,
+          user: message.user.username
+        head :ok
+      end
+    else
+      respond_to do |format|
+        flash[:notice] = {ERROR: ["有空座位 无法发牌"]}
+        format.html { redirect_to chatroom_path }
+        format.js { render template: 'messages/game_error.js.erb'} 
+      end
+    end
   end
 
   private
@@ -71,9 +97,28 @@ class MessagesController < ApplicationController
         hash['seats'][seat.to_s]['user'] = user.username
       elsif hash['seats'][seat.to_s]['user'] == user.username
         hash['seats'][seat.to_s]['user'] = 'EMPTY_SEAT_USER'
+        hash['seats'][seat.to_s]['role'] = 'EMPTY_ROLE'
       else
         raise Exception.new('Seat Already Taken')
       end
       hash.to_json
+    end
+
+    def update_user_roles(hash, roles)
+      room_size = hash['room_size'].to_i
+      (1..room_size).each do |i|
+        hash['seats'][i.to_s]['role'] = roles[i-1]
+      end
+      hash.to_json
+    end
+
+    def is_full_seats?(hash)
+      room_size = hash['room_size'].to_i
+      (1..room_size).each do |i|
+        if hash['seats'][i.to_s]['user'] == 'EMPTY_SEAT_USER'
+          return false
+        end
+      end
+      true
     end
 end
