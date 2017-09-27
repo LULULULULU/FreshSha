@@ -3,40 +3,37 @@
 </div>
 
 <div id="chatroom-errors">
-    
 </div>
-<div class="container">
+
+<div class="container-fluild">
   <%= render partial: 'seats/seat', collection: @seats%>
 </div>
 
 <div class="row col-md-8 col-md-offset-2">
   <h1><%= @chatroom.topic %></h1>
 
-<div class="panel panel-default" id="info-panel">
-  <% if @chatroom_message.any? %>
-    <div class="panel-body" id="messages">
-      <%= render partial: 'messages/message', collection: @chatroom_message%>
-    </div>
-  <%else%>
-    <div class="panel-body hidden" id="messages">
-    </div>
-  <%end%>
-</div>
+  <div class="panel panel-default" id="info-panel">
+    <% if @chatroom_message.any? %>
+      <div class="panel-body" id="messages">
+        <%= render partial: 'messages/message', collection: @chatroom_message%>
+      </div>
+    <%else%>
+      <div class="panel-body hidden" id="messages">
+      </div>
+    <%end%>
+  </div>
 
-<%= link_to 'Destroy', chatroom_path(@chatroom),
-              method: :delete,
-              data: { confirm: 'Are you sure?' } %>
+  <%= link_to 'Destroy', chatroom_path(@chatroom), method: :delete, data: { confirm: 'Are you sure?' }%>
 
-<button type="button" id="redeal" class="btn btn-primary">重新发牌</button>
-<button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
+  <button type="button" id="redeal" class="btn btn-primary">重新发牌</button>
+  <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
+  <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
+  <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
 
-<button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
-<button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
-
-  <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
-
-<div>
-  <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
-</div>
-
+  <div>
+    <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
+  </div>
+  <div>
+    <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
+  </div>
 </div>

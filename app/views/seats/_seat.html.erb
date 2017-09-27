@@ -1,11 +1,18 @@
+<div class="seat-box">
+<% if seat.user == 'EMPTY_SEAT_USER' %>
+  <label id="seat-label-<%=seat.number%>">空</label>
+<%else%>
+  <label id="seat-label-<%=seat.number%>"><%=seat.user%></label>
+<%end%>
 <%=form_for seat, url: {action: :sit, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
   <%= f.hidden_field :seat_number, value: seat.number %>
   <%= f.hidden_field :seat_user, value: seat.user %>
   <%= f.hidden_field :chatroom_id, value: @chatroom.id %>
   <%= f.hidden_field :message_id, value: @display_message.last.id %>
   <% if seat.user == 'EMPTY_SEAT_USER' %>
-    <%= f.submit "空座位", class: "btn btn-primary", id: "seat-#{seat.number}", data: {send: "sit"}%>
+  <%= f.submit "#{seat.number}", class: "btn btn-success seat-btn", id: "seat-#{seat.number}", data: {send: "sit"}%>
   <%else%>
-    <%= f.submit seat.user, class: "btn btn-primary", id: "seat-#{seat.number}", data: {send: "sit"}%>
+  <%= f.submit "#{seat.number}", class: "btn btn-secondary seat-btn", id: "seat-#{seat.number}", data: {send: "sit"}%>
   <%end%>
 <%end%>
+</div>
