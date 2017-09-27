@@ -13,7 +13,7 @@ class MessagesController < ApplicationController
 
     message.user = current_user
     if message.save
-      ActionCable.server.broadcast 'messages',
+      ActionCable.server.broadcast "messages_room_channel_#{message.chatroom.topic}",
         message: message.content,
         id: message.id,
         user: message.user.username
@@ -28,7 +28,7 @@ class MessagesController < ApplicationController
     # logger.info("message:")
     # logger.info("#{message}")
     if message.update(message_params)
-      ActionCable.server.broadcast 'messages',
+      ActionCable.server.broadcast "messages_room_channel_#{message.chatroom.topic}",
         message: message.content,
         id: message.id,
         user: message.user.username
@@ -37,14 +37,15 @@ class MessagesController < ApplicationController
   end
 
   def sit
-    # logger.info("=============== In sit ====================")
+    logger.info("=============== In sit ====================")
     # logger.info("#{params.as_json}")
     message = Message.find(params[:seat][:message_id])
+    logger.info("channel: \'messages_room_channel_#{message.chatroom.topic}\'")
     user = current_user
     begin
       content = update_hash_sit(message, user, params[:seat][:seat_number])
       if message.update(content: content)
-        ActionCable.server.broadcast 'messages',
+        ActionCable.server.broadcast "messages_room_channel_#{message.chatroom.topic}",
           message: message.content,
           id: message.id,
           user: message.user.username

@@ -1,5 +1,5 @@
 <div class="data-div" type=hidden>
-  <%= render partial: 'messages/message_data', locals: {current_message: @display_message, this_user: @current_user}%>
+  <%= render partial: 'messages/message_data', locals: {current_message: @display_message, this_user: @current_user, room: @chatroom}%>
 </div>
 
 <div id="chatroom-errors">
