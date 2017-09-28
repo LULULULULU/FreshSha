@@ -126,39 +126,39 @@ class ChatroomsController < ApplicationController
 
       roles = Array.new
       if seer >= 1
-        roles.push("seer")
+        roles.push(SEER)
       end
 
       if witch >= 1
-        roles.push("witch")
+        roles.push(WITCH)
       end
 
       if hunter >= 1
-        roles.push("hunter")
+        roles.push(HUNTER)
       end
 
       if defender >= 1
-        roles.push("defender")
+        roles.push(DEFENDER)
       end
 
       if thief >= 1
-        roles.push("thief")
+        roles.push(THIEF)
       end
 
       if elder >= 1
-        roles.push("elder")
+        roles.push(ELDER)
       end
 
       if whitewolf >= 1
-        roles.push("whitewolf")
+        roles.push(WHITEWOLF)
       end
 
       (1..villager).each do |i|
-        roles.push("villager")
+        roles.push(WHITEWOLF)
       end
 
       (1..werewolf).each do |i|
-        roles.push("werewolf")
+        roles.push(WEREWOLF)
       end
 
       string = "{\"cure_rules\":\"#{params[:cure_rules]}\", \"poison_rule\":\"#{params[:poison_rule]}\", \"guard_rule\":\"#{params[:guard_rule]}\", \"thief_rule\":\"#{params[:thief_rule]}\", \"room_size\":\"#{room_size}\", "
@@ -173,7 +173,7 @@ class ChatroomsController < ApplicationController
         string = string + " \"#{index}\": \"#{item}\","
       }
       string = string[0..-2] #remove last ,
-      string = string + "} }"
+      string = string + "}, \"started\": \"false\", \"master_user\": \"EMPTY_SEAT_USER\", \"turn\": \"EMPTY_ROLE\"}"
       string
     end
 end

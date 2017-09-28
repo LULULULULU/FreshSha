@@ -3,23 +3,6 @@ require 'logger'
 logger = Logger.new(STDOUT)
 
 class MessagesController < ApplicationController
-
-  # Rules constants
-  FIRST_NIGHT_SAVE = 'FirstNightSave'
-  NOT_SELF_SAVE = 'CannotSaveSelf'
-  CAN_SELF_SAVE = 'CanSaveSelf'
-
-  CURE_POISON_TOGETHER = 'CanUseCurePoisonSameNight'
-  NOT_CURE_POISON_TOGETHER = 'CannotUseCurePoisonSameNight'
-
-  GUARD_CURE_IS_DEAD = 'GuardAndCuredIsDead'
-  GUARD_CURE_IS_ALIVE = 'GuardAndCuredIsAlive'
-
-  PICK_WOLF = 'MustPickWerewolf'
-  ALL_PICK = 'AllPick'
-
-  
-
   def create
     message = Message.new(message_params)
 
@@ -106,6 +89,16 @@ class MessagesController < ApplicationController
     logger.info("=============== Exiting skill use ====================")
   end
 
+  def start_end
+    logger.info("=============== Entering start_end ====================")
+    logger.info("#{FIRST_NIGHT_SAVE}")
+    logger.info("#{params.as_json}")
+    message = Message.find(params[:message][:message_id])
+    hash = JSON.parse(message.content)
+    user = current_user
+    logger.info("=============== Exiting start_end ====================")
+  end
+
   private
 
     def message_params
@@ -126,7 +119,16 @@ class MessagesController < ApplicationController
     end
 
     def update_user_roles(hash, roles)
-      room_size = hash['room_size'].to_i
+      if hash['started'] == 'false'
+        hash['started'] = 'true'
+      else
+        hash['started'] = 'false'
+      end
+      hash.to_json
+    end
+
+    def update_game_started(hash)
+      room_size = hash[''].to_i
       (1..room_size).each do |i|
         hash['seats'][i.to_s]['role'] = roles[i-1]
       end

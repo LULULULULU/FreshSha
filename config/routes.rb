@@ -14,9 +14,11 @@ Rails.application.routes.draw do
   post '/skill/sit', to: "messages#sit"
   post '/skill/shuffle', to: "messages#shuffle"
   post '/skill/use', to: "messages#skill"
+  post '/game/start_end', to: "messages#start_end"
 
   resources :chatrooms, param: :slug
   resources :messages
+  resources :users
   
   # Serve websocket cable requests in-process
   mount ActionCable.server => '/cable'

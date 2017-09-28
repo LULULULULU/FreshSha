@@ -1,0 +1,11 @@
+<div class="row col-md-8 col-md-offset-2" id="chatroom-title">
+  <h1>Users</h1>
+</div>
+
+<div class="row col-md-8 col-md-offset-2" id="chatrooms">
+  <% if @users.any? %>
+      <%= render @users%>
+  <%else %>
+    <p>还没有用户!</p>
+  <% end %>
+</div>

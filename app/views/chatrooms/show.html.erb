@@ -12,7 +12,9 @@
     <%= render partial: 'seats/seat', collection: @seats%>
   </div>
 
-  <div class="skill-panel">
+  <div id="identity-panel">
+  </div>
+  <div id="skill-panel">
     <%= render partial: 'messages/skill', locals: {message: @display_message.last, user: @current_user, chatroom: @chatroom} %>
   </div>
 
@@ -41,23 +43,23 @@
         <div class="container row col-md-8 col-md-offset-2 ">
           <div class="center">
             <div class="action-button-div">
-              <%= render partial: 'messages/shuffle' %>
-            </div>
-
-            <div class="action-button-div">
               <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
-            </div>
-    
-            <div class="action-button-div">
-              <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
             </div>
            
             <div class="action-button-div">
               <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
             </div>
+
+            <div class="action-button-div">
+              <button type="button" id="lastnightinfo" class="btn btn-warning" onclick="lastnightinfo()">昨夜信息</button>
+            </div>
            
             <div class="action-button-div">
-              <button type="button" id="identity" class="btn btn-primary" onclick="start()">开始游戏</button>
+              <%= render partial: 'messages/start_end_game', locals: {message: @display_message.last, user: @current_user, chatroom: @chatroom} %>
+            </div>
+
+            <div class="action-button-div">
+              <%= render partial: 'messages/shuffle' %>
             </div>
           </div>
         </div>
