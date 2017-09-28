@@ -5,18 +5,12 @@
 <div id="game-error">
 </div>
 
-<div class="container-fluild">
-  <%= render partial: 'seats/seat', collection: @seats%>
-</div>
 
 <div class="row col-md-8 col-md-offset-2">
   <h1><%= @chatroom.topic %> </h1> <h3><%= link_to '删除房间', chatroom_path(@chatroom), method: :delete, data: { confirm: 'Are you sure?' }%></h3>
-
-
-  <%= render partial: 'messages/shuffle' %>
-  <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
-  <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
-  <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
+  <div class="container-fluild">
+    <%= render partial: 'seats/seat', collection: @seats%>
+  </div>
 
   <div class="panel panel-default" id="info-panel">
     <% if @chatroom_message.any? %>
@@ -38,4 +32,16 @@
       <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
     </div>
   <% end %>
+<footer>
+    <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="container">
+              <%= render partial: 'messages/shuffle' %>
+  <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
+  <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
+  <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
+
+        </div>
+    </div>
+</footer>
+
 </div>

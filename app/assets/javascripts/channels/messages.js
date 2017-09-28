@@ -1,3 +1,5 @@
+var debug = false;
+
 App.messages = App.cable.subscriptions.create('MessagesChannel', {  
   received: function(data) {
     $("#messages").removeClass('hidden')
@@ -9,6 +11,7 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
     if (data_msg_id === current_msg_id) {
       previousdata = this.getCurrentRoomMessage();
       this.updateSeats(gamedata);
+      this.setCurrentRoomMessage(data.message)
       return $('#messages').html(this.renderMessage(data));
     }
     console.log('Received msg<id='+ data_msg_id +'>, doesn\'t match current msg<id='+ current_msg_id +'>. Not updating room.');
@@ -47,6 +50,9 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
         roleStr = " (无身份)";
       } else {
         roleStr = ' ('+role+')';
+      }
+      if (!debug) {
+        roleStr = '';
       }
       if (user === 'EMPTY_SEAT_USER') {
         $("#seat-"+i).addClass("btn-success");

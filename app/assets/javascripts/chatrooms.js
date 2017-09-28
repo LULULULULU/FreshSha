@@ -38,3 +38,8 @@ function lastnightinfo() {
   }
 }
 
+function identity() {
+  var content = $('.data-div #message_current_message_content').val();
+  var user_name = $('.data-div #message_this_user_name').val();
+}
+

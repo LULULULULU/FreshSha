@@ -37,15 +37,30 @@
     margin-right: 20px;
 }
 
+.message {
+    word-break: break-all;
+    white-space: normal;
+}
+
+.seat-label {
+  
+}
+
 .seat-box {
   display: inline-block;
-  width: 100px;
+  width: 80px;
   height: 100px;
-  margin: 1em;
 }
 
 .seat-btn {
   display: block;
-  margin: 0px;
-  padding: 30px;
+  width:  55px;
+  height: 55px;
+}
+
+
+#main-room-container {
+   min-height: 400px;
+   margin-bottom: 100px;
+   clear: both;
 }

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Chatty</title>
+    <title>Fresh狼人杀</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%= csrf_meta_tags %>
     <%= action_cable_meta_tag %>
 
@@ -12,10 +13,9 @@
   </head>
 
   <body>
-   <a class="github-fork-ribbon right-bottom fixed" href="https://github.com/sophiedebenedetto/action-cable-example" title="Fork me on GitHub">Fork me on GitHub</a>
   <%= render partial: 'layouts/navbar' %>
 
-  <div class="container">
+  <div class="container" id="main-room-container">
     <%= yield %>
   </div>
   </body>
