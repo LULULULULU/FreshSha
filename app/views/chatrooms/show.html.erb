@@ -12,6 +12,10 @@
     <%= render partial: 'seats/seat', collection: @seats%>
   </div>
 
+  <div class="skill-panel">
+    <%= render partial: 'messages/skill', locals: {message: @display_message.last, user: @current_user, chatroom: @chatroom} %>
+  </div>
+
   <div class="panel panel-default" id="info-panel">
     <% if @chatroom_message.any? %>
       <div class="panel-body" id="messages">
@@ -23,7 +27,6 @@
     <%end%>
   </div>
 
-
   <% if false %>
     <div>
       <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
@@ -32,14 +35,31 @@
       <%= render partial: 'messages/edit_message_form', locals: {message: @display_message, chatroom: @chatroom}%>
     </div>
   <% end %>
-<footer>
-    <div class="navbar navbar-inverse navbar-fixed-bottom">
-        <div class="container">
-              <%= render partial: 'messages/shuffle' %>
-  <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
-  <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
-  <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
 
+<footer>
+    <div class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container row col-md-8 col-md-offset-2 ">
+          <div class="center">
+            <div class="action-button-div">
+              <%= render partial: 'messages/shuffle' %>
+            </div>
+
+            <div class="action-button-div">
+              <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
+            </div>
+    
+            <div class="action-button-div">
+              <button type="button" id="lastnightinfo" class="btn btn-primary" onclick="lastnightinfo()">昨夜信息</button>
+            </div>
+           
+            <div class="action-button-div">
+              <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
+            </div>
+           
+            <div class="action-button-div">
+              <button type="button" id="identity" class="btn btn-primary" onclick="start()">开始游戏</button>
+            </div>
+          </div>
         </div>
     </div>
 </footer>

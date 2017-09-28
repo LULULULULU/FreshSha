@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   # Skills
   post '/skill/sit', to: "messages#sit"
   post '/skill/shuffle', to: "messages#shuffle"
+  post '/skill/use', to: "messages#skill"
 
   resources :chatrooms, param: :slug
   resources :messages

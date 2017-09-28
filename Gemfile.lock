@@ -181,7 +181,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap (~> 4.0.0.beta)
-  bootstrap-sass (~> 3.3.6)
+  bootstrap-sass (~> 3.3.7)
   byebug
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)

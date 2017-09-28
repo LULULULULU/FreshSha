@@ -4,6 +4,22 @@ logger = Logger.new(STDOUT)
 
 class MessagesController < ApplicationController
 
+  # Rules constants
+  FIRST_NIGHT_SAVE = 'FirstNightSave'
+  NOT_SELF_SAVE = 'CannotSaveSelf'
+  CAN_SELF_SAVE = 'CanSaveSelf'
+
+  CURE_POISON_TOGETHER = 'CanUseCurePoisonSameNight'
+  NOT_CURE_POISON_TOGETHER = 'CannotUseCurePoisonSameNight'
+
+  GUARD_CURE_IS_DEAD = 'GuardAndCuredIsDead'
+  GUARD_CURE_IS_ALIVE = 'GuardAndCuredIsAlive'
+
+  PICK_WOLF = 'MustPickWerewolf'
+  ALL_PICK = 'AllPick'
+
+  
+
   def create
     message = Message.new(message_params)
 
@@ -60,14 +76,13 @@ class MessagesController < ApplicationController
   end
 
   def shuffle
-    logger.info("=============== In shuffle ====================")
-    logger.info("#{params.as_json}")
+    # logger.info("=============== In shuffle ====================")
+    # logger.info("#{params.as_json}")
     message = Message.find(params[:message][:message_id])
     hash = JSON.parse(message.content)
     if is_full_seats?(hash)
       shuffled_roles = hash['roles'].values.shuffle
       shuffled_roles = shuffled_roles.shuffle
-      logger.info("#{shuffled_roles}")
       content = update_user_roles(hash, shuffled_roles)
       if message.update(content: content)
         ActionCable.server.broadcast 'messages',
@@ -83,6 +98,12 @@ class MessagesController < ApplicationController
         format.js { render template: 'messages/game_error.js.erb'} 
       end
     end
+  end
+
+  def skill
+    logger.info("=============== Entering skill use ====================")
+    logger.info("#{params.as_json}")
+    logger.info("=============== Exiting skill use ====================")
   end
 
   private

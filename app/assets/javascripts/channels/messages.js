@@ -1,4 +1,4 @@
-var debug = false;
+var debug = true;
 
 App.messages = App.cable.subscriptions.create('MessagesChannel', {  
   received: function(data) {

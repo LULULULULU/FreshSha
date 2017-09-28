@@ -33,6 +33,12 @@
   display: none;
 }
 
+.center {
+    margin: 0 auto;
+    width: 80%;
+    padding: 10px;
+}
+
 .name-label {
     margin-right: 20px;
 }
@@ -42,14 +48,14 @@
     white-space: normal;
 }
 
-.seat-label {
-  
-}
-
 .seat-box {
   display: inline-block;
   width: 80px;
   height: 100px;
+}
+
+.action-button-div {
+  display: inline-block;
 }
 
 .seat-btn {
@@ -59,8 +65,16 @@
 }
 
 
+.skill-info-label {
+  color: blue;
+}
+
+.skill-panel {
+  border: 3px solid green;
+}
+
 #main-room-container {
    min-height: 400px;
-   margin-bottom: 100px;
+   margin-bottom: 120px;
    clear: both;
 }

@@ -9,7 +9,7 @@ gem 'pg', '~> 0.18'
 # Use Puma as the app server
 gem 'puma'
 # Use SCSS for stylesheets
-gem 'bootstrap-sass', '~> 3.3.6'
+gem 'bootstrap-sass', '~> 3.3.7'
 gem 'bootstrap', '~> 4.0.0.beta'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
