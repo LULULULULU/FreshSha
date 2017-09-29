@@ -43,6 +43,13 @@ class ApplicationController < ActionController::Base
     WOLF => "狼人请睁眼", WITCH => "女巫请睁眼", DAY_TIME => "天亮了"
   }
 
+  # Skills
+  WITCH_KILL = "witch_kill"
+  WITCH_SAVE = "witch_save"
+  DEFENDER_GUARD = "defender_guard"
+  WOLF_KILL = "wolf_kill"
+  SEER_CHECK = "seer_check"
+
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end

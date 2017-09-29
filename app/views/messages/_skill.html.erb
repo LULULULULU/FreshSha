@@ -3,7 +3,7 @@
 <div id="seer-skill-panal">
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
     <!-- =============================================================== -->
-    <!-- TODO: Update id="seer-kill-info" in jQuery when receive message -->
+    <!-- TODO: Update id="seer-check-info" in jQuery when receive message -->
     <!-- =============================================================== -->
     <label class="form-check-label skill-info-label" id="seer-check-info">
     此处显示验证结果
@@ -20,6 +20,7 @@
   <%end%>
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
     <%= f.hidden_field :caster, value: :seer %>
+    <%= f.hidden_field :seer_end, value: true %>
     <%= f.hidden_field :chatroom_id, value: chatroom.id %>
     <%= f.hidden_field :message_id, value: message.id %>
     <%= f.hidden_field :user_name, value: user.username %>
@@ -30,10 +31,10 @@
 
 <div id="witch-skill-panal" class="form-check form-check-inline">
     <!-- =============================================================== -->
-    <!-- TODO: Update id="witch-kill-info" in jQuery when receive message -->
+    <!-- TODO: Update id="witch-save-info" in jQuery when receive message -->
     <!-- =============================================================== -->
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
-    <label class="form-check-label skill-info-label" id="witch-kill-info">
+    <label class="form-check-label skill-info-label" id="witch-save-info">
     昨夜无人死亡 是否救人
     </label><%= f.select :witch_save, ['not save','save']%>
     <label class="form-check-label name-label">
@@ -78,7 +79,7 @@
 
 <div id="hunter-skill-panal" class="form-check form-check-inline">
   <!-- =============================================================== -->
-  <!-- TODO: Update id="witch-kill-info" in jQuery when receive message -->
+  <!-- TODO: Update id="hunter-check-info" in jQuery when receive message -->
   <!-- =============================================================== -->
   <label class="form-check-label skill-info-label" id="hunter-check-info">
     显示可否使用技能

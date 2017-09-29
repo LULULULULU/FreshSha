@@ -5,7 +5,7 @@ $(document).on('turbolinks:load', function() {
   var panel = document.getElementById('info-panel');
   var skill_panel = document.getElementById('skill-panel');
   var identity_panel = document.getElementById('identity-panel');
-  if (panel) {  panel.style.display = 'none'; }
+  // if (panel) {  panel.style.display = 'none'; }
   if (skill_panel) { skill_panel.style.display = 'none'; }
   if (identity_panel) { identity_panel.style.display = 'none'; }
 });
