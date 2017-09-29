@@ -1,5 +1,4 @@
-<% hash = JSON.parse(message.content) %>
-<% room_size = hash['room_size'].to_i %>
+<% room_size = @hash['room_size'].to_i %>
 
 <div id="seer-skill-panal">
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>

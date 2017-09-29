@@ -27,13 +27,21 @@ class ApplicationController < ActionController::Base
   THIEF = "thief"
   ELDER = "elder"
   VILLAGER = "villager"
-  WOLF = 'wolf' # Not a real role
   WHITEWOLF = "whitewolf"
   WEREWOLF = "werewolf"
 
+  # Additional turn string
+  WOLF = "wolf"
+  SEER_CHECK_TURN = "seer_check"
+  SEER_END_TURN = "seer_end"
+  DAY_TIME = "day_time"
 
-  GAME_TURN = [THIEF, DEFENDER, SEER, WOLF, WITCH]
-
+  GAME_TURN = [THIEF, DEFENDER, SEER_CHECK_TURN, SEER_END_TURN, WOLF, WITCH, DAY_TIME]
+  GAME_TURN_DISPLAY_MAP = {
+    THIEF => "盗贼请睁眼", DEFENDER => "守卫请睁眼",
+    SEER_CHECK_TURN => "预言家请睁眼", SEER_END_TURN => "预言家结束",
+    WOLF => "狼人请睁眼", WITCH => "女巫请睁眼", DAY_TIME => "天亮了"
+  }
 
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]

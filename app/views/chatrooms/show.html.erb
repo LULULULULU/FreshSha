@@ -1,3 +1,7 @@
+<% @debugMode = true %>
+<% @editMessage = false %>
+<% @hash = JSON.parse(@display_message.last.content) %>
+<% @gameStarted = (@hash['started'] == 'true') %>
 <div class="data-div" type=hidden>
   <%= render partial: 'messages/message_data', locals: {current_message: @display_message, this_user: @current_user}%>
 </div>
@@ -7,8 +11,19 @@
 
 
 <div class="row col-md-8 col-md-offset-2">
-  <h1><%= @chatroom.topic %> </h1> <h3><%= link_to '删除房间', chatroom_path(@chatroom), method: :delete, data: { confirm: 'Are you sure?' }%></h3>
-  <div class="container-fluild">
+  <div id="topic-panel">
+    <h1><%= @chatroom.topic %></h1><h5>  <%= link_to '删除房间', chatroom_path(@chatroom), method: :delete, data: { confirm: '确定删除房间?' }%></h5>
+    <h5 id="topic-panel-current-turn-h">
+      <%if @gameStarted %>
+        <%=@hash['turn_display']%>
+      <%else%>
+        游戏尚未开始
+      <%end%>
+    </h5>
+  </div>
+
+  <% shrink = @gameStarted ? 'shrink' : '' %>
+  <div id="seats-panel" class="container-fluild <%=shrink%>">
     <%= render partial: 'seats/seat', collection: @seats%>
   </div>
 
@@ -29,7 +44,7 @@
     <%end%>
   </div>
 
-  <% if false %>
+  <% if @editMessage %>
     <div>
       <%= render partial: 'messages/message_form', locals: {message: @message, chatroom: @chatroom}%>
     </div>
@@ -45,7 +60,7 @@
             <div class="action-button-div">
               <button type="button" id="useskill" class="btn btn-primary" onclick="useskill()">使用技能</button>
             </div>
-           
+
             <div class="action-button-div">
               <button type="button" id="identity" class="btn btn-primary" onclick="identity()">身份配置</button>
             </div>
@@ -53,7 +68,7 @@
             <div class="action-button-div">
               <button type="button" id="lastnightinfo" class="btn btn-warning" onclick="lastnightinfo()">昨夜信息</button>
             </div>
-           
+
             <div class="action-button-div">
               <%= render partial: 'messages/start_end_game', locals: {message: @display_message.last, user: @current_user, chatroom: @chatroom} %>
             </div>

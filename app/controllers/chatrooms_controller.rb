@@ -31,8 +31,8 @@ class ChatroomsController < ApplicationController
       respond_to do |format|
         flash[:notice] = {ERROR: ["new不是一个合法的名字 GG"]}
         format.html { redirect_to new_chatroom_path }
-        format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
-      end 
+        format.js { render template: 'chatrooms/chatroom_error.js.erb'}
+      end
       return
     end
     @chatroom = Chatroom.new(chatroom_params)
@@ -48,14 +48,14 @@ class ChatroomsController < ApplicationController
         respond_to do |format|
           flash[:notice] = {ERROR: ["创建房间失败 GG"]}
           format.html { redirect_to new_chatroom_path }
-          format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
-        end 
+          format.js { render template: 'chatrooms/chatroom_error.js.erb'}
+        end
       end
     else
       respond_to do |format|
         flash[:notice] = {ERROR: ["房名空或已存在 GG"]}
         format.html { redirect_to new_chatroom_path }
-        format.js { render template: 'chatrooms/chatroom_error.js.erb'} 
+        format.js { render template: 'chatrooms/chatroom_error.js.erb'}
       end
     end
   end
@@ -85,7 +85,7 @@ class ChatroomsController < ApplicationController
     # logger.info("#{params.as_json}")
     @chatroom = Chatroom.find_by(slug: params[:slug])
     @chatroom.destroy
- 
+
     redirect_to chatrooms_path
   end
 

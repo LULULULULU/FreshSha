@@ -53,7 +53,7 @@ class MessagesController < ApplicationController
       respond_to do |format|
         flash[:notice] = {ERROR: ["此位置有人坐了"]}
         format.html { redirect_to chatroom_path }
-        format.js { render template: 'messages/game_error.js.erb'} 
+        format.js { render template: 'messages/game_error.js.erb'}
       end
     end
   end
@@ -65,8 +65,11 @@ class MessagesController < ApplicationController
     hash = JSON.parse(message.content)
     if is_full_seats?(hash)
       shuffled_roles = hash['roles'].values.shuffle
+      # logger.info("1: #{shuffled_roles}")
       shuffled_roles = shuffled_roles.shuffle
+      # logger.info("2: #{shuffled_roles}")
       content = update_user_roles(hash, shuffled_roles)
+      # logger.info("=============== exiting shuffle ====================")
       if message.update(content: content)
         ActionCable.server.broadcast 'messages',
           message: message.content,
@@ -78,7 +81,7 @@ class MessagesController < ApplicationController
       respond_to do |format|
         flash[:notice] = {ERROR: ["有空座位 无法发牌"]}
         format.html { redirect_to chatroom_path }
-        format.js { render template: 'messages/game_error.js.erb'} 
+        format.js { render template: 'messages/game_error.js.erb'}
       end
     end
   end
@@ -96,6 +99,14 @@ class MessagesController < ApplicationController
     message = Message.find(params[:message][:message_id])
     hash = JSON.parse(message.content)
     user = current_user
+    content = update_game_started(hash, user)
+    if message.update(content: content)
+      ActionCable.server.broadcast 'messages',
+        message: message.content,
+        id: message.id,
+        user: message.user.username
+      head :ok
+    end
     logger.info("=============== Exiting start_end ====================")
   end
 
@@ -118,17 +129,51 @@ class MessagesController < ApplicationController
       hash.to_json
     end
 
-    def update_user_roles(hash, roles)
+    def update_game_started(hash, user)
       if hash['started'] == 'false'
         hash['started'] = 'true'
+        hash['master_user'] = user.username
+        start_game_turns(hash)
       else
         hash['started'] = 'false'
+        hash['master_user'] = 'EMPTY_SEAT_USER'
+        hash['turn'] = 'EMPTY_ROLE'
+        hash['turn_display'] = 'EMPTY_ROLE'
       end
       hash.to_json
     end
 
-    def update_game_started(hash)
-      room_size = hash[''].to_i
+    def start_game_turns(hash)
+      all_roles = hash['roles'].values
+      if all_roles.include?(THIEF)
+        hash['turn'] = THIEF
+        hash['turn_display'] = GAME_TURN_DISPLAY_MAP[THIEF]
+
+      elsif all_roles.include?(DEFENDER)
+        hash['turn'] = DEFENDER
+        hash['turn_display'] = GAME_TURN_DISPLAY_MAP[DEFENDER]
+
+      elsif all_roles.include?(SEER)
+        hash['turn'] = SEER_CHECK_TURN
+        hash['turn_display'] = GAME_TURN_DISPLAY_MAP[SEER_CHECK_TURN]
+
+      elsif all_roles.include?(WHITEWOLF) || all_roles.include?(WEREWOLF)
+        hash['turn'] = WOLF
+        hash['turn_display'] = GAME_TURN_DISPLAY_MAP[WOLF]
+
+      elsif all_roles.include?(WITCH)
+        hash['turn'] = WITCH
+        hash['turn_display'] = GAME_TURN_DISPLAY_MAP[WITCH]
+
+      else
+        hash['turn'] = DAY_TIME
+        hash['turn_display'] = GAME_TURN_DISPLAY_MAP[DAY_TIME]
+      end
+      hash
+    end
+
+    def update_user_roles(hash, roles)
+      room_size = hash['room_size'].to_i
       (1..room_size).each do |i|
         hash['seats'][i.to_s]['role'] = roles[i-1]
       end

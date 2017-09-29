@@ -1,8 +1,9 @@
 <div class="seat-box">
+<% disabled = @gameStarted ? 'disabled' : '' %>
 
 <label id="seat-label-<%=seat.number%>" class="seat-label">
     <% if seat.user == 'EMPTY_SEAT_USER' %>空<%else%><%=seat.user%><%end%>
-    <% if false %>
+    <% if @debugMode %>
     <% if seat.role == 'EMPTY_ROLE' %>(无身份)<%else%>(<%=seat.role%>)<%end%>
     <% end %>
 </label>
@@ -12,9 +13,9 @@
   <%= f.hidden_field :chatroom_id, value: @chatroom.id %>
   <%= f.hidden_field :message_id, value: @display_message.last.id %>
   <% if seat.user == 'EMPTY_SEAT_USER' %>
-  <%= f.submit "#{seat.number}", class: "btn btn-success seat-btn", id: "seat-#{seat.number}", data: {send: "sit"}%>
+  <%= f.submit "#{seat.number}", class: "btn btn-success seat-btn #{disabled}", id: "seat-#{seat.number}", data: {send: "sit"}, disabled: disabled=='disabled' %>
   <%else%>
-  <%= f.submit "#{seat.number}", class: "btn btn-secondary seat-btn", id: "seat-#{seat.number}", data: {send: "sit"}%>
+  <%= f.submit "#{seat.number}", class: "btn btn-outline-success-luwu seat-btn #{disabled}", id: "seat-#{seat.number}", data: {send: "sit"}, disabled: disabled=='disabled' %>
   <%end%>
 <%end%>
 </div>
