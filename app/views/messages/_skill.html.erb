@@ -1,4 +1,5 @@
 <% room_size = @hash['room_size'].to_i %>
+<% night = @hash['night'].to_i %>
 
 <div id="seer-skill-panal">
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
@@ -6,7 +7,7 @@
     <!-- TODO: Update id="seer-check-info" in jQuery when receive message -->
     <!-- =============================================================== -->
     <label class="form-check-label skill-info-label" id="seer-check-info">
-    此处显示验证结果
+    <%= @hash['seer_check_display']%>
     </label>
     <label class="form-check-label name-label">
     选择查验目标 <%= f.select :seer_check, (1..room_size).to_a %>
@@ -35,7 +36,7 @@
     <!-- =============================================================== -->
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
     <label class="form-check-label skill-info-label" id="witch-save-info">
-    昨夜无人死亡 是否救人
+    <%= @hash['witch_save_display']%>
     </label><%= f.select :witch_save, ['not save','save']%>
     <label class="form-check-label name-label">
     选择毒杀目标<%= f.select :witch_kill, ['not kill']+(1..room_size).to_a %>

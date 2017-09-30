@@ -45,7 +45,7 @@ class MessagesController < ApplicationController
           user: message.user.username
         head :ok
       end
-    rescue Exception
+    rescue MessagesHelper::MessageError
       respond_to do |format|
         flash[:notice] = {ERROR: ["此位置有人坐了"]}
         format.html { redirect_to chatroom_path }
@@ -102,15 +102,36 @@ class MessagesController < ApplicationController
       begin
         case caster
         when SEER
-          content = seer_skill(hash, parameters)
+          seer_skill(hash, parameters)
+          content = update_game_turn(hash)
         when WITCH
-          content = witch_skill(hash, parameters)
+          witch_skill(hash, parameters)
         when WOLF
-          content = wolf_skill(hash, parameters)
+          wolf_skill(hash, parameters)
+          update_witch_save_info(hash)
+          content = update_game_turn(hash)
         when DEFENDER
-          content = defender_skill(hash, parameters)
+          defender_skill(hash, parameters)
+          content = update_game_turn(hash)
         else
           raise MessagesHelper::SkillUseError.new("不知名错误")
+        end
+
+        # logger.info("DDDDDDDBUG: increase night count")
+        # hash = JSON.parse(content)
+        # hash['night'] = (hash['night'].to_i+1).to_s
+        # content = hash.to_json
+        # logger.info("DDDDDDDBUG: increase night count")
+
+        # TODO: 更新轮次 hash['turn']
+        # 如果下个轮次是DAY_TIME 更新所有人状态
+        # content = update_game_turn(hash)
+        if message.update(content: content)
+          ActionCable.server.broadcast 'messages',
+            message: message.content,
+            id: message.id,
+            user: message.user.username
+          head :ok
         end
       rescue MessagesHelper::SkillUseError => error
         respond_to do |format|
@@ -118,22 +139,6 @@ class MessagesController < ApplicationController
           format.html { redirect_to chatroom_path }
           format.js { render template: 'messages/game_error.js.erb'}
         end
-      end
-
-
-      # logger.info("DDDDDDDBUG: increase night count")
-      # hash = JSON.parse(content)
-      # hash['night'] = (hash['night'].to_i+1).to_s
-      # content = hash.to_json
-      # logger.info("DDDDDDDBUG: increase night count")
-
-
-      if message.update(content: content)
-        ActionCable.server.broadcast 'messages',
-          message: message.content,
-          id: message.id,
-          user: message.user.username
-        head :ok
       end
       return
 
@@ -184,40 +189,91 @@ class MessagesController < ApplicationController
   # ====================================================================================
 
     def seer_skill(hash, params)
-      logger = Logger.new(STDOUT)
-      logger.info("=============== seer skill ====================")
-      logger.info("#{hash}")
-      logger.info("#{params}")
-      raise MessagesHelper::SkillUseError.new("预言家技能发生错误")
+      # logger.info("=============== seer skill ====================")
+      # logger.info("#{hash}")
+      # logger.info("#{params}")
+      night = hash['night']
+      turn = hash['turn']
+
+      # Make sure seer use right skill at the right seer turn
+      if turn == SEER_CHECK_TURN && !params.include?(SEER_CHECK)
+        raise MessagesHelper::SkillUseError.new("预言家请先验人")
+      elsif turn == SEER_END_TURN && !params.include?(SEER_END)
+        raise MessagesHelper::SkillUseError.new("预言家请结束")
+      end
+
+      if params.include?(SEER_CHECK)
+        seer_check_seat = params[SEER_CHECK]
+        hash['night_actions'] ||= {}  # make sure hash['night_action'] not nil
+        night_hash = hash['night_actions'][night] ||= {} # make sure hash['night_action'][night] not nil
+        night_hash[SEER_CHECK] = seer_check_seat
+
+        # Set display message for seer check
+        if hash['seats'].include?(seer_check_seat)
+          check_role = hash['seats'][seer_check_seat]['role']
+          if check_role == 'EMPTY_ROLE'
+            raise MessagesHelper::SkillUseError.new("#{seer_check_seat}号身份错误: #{check_role}")
+          elsif check_role == WEREWOLF || check_role == WHITEWOLF
+            hash['seer_check_display'] = "#{seer_check_seat}号身份是: 狼人"
+          else
+            hash['seer_check_display'] = "#{seer_check_seat}号身份是: 好人"
+          end
+        else
+          raise MessagesHelper::SkillUseError.new("#{seer_check_seat}号座位不存在")
+        end
+
+      elsif params.include?(SEER_END)
+        night_hash = hash['night_actions'][night] ||= {} # make sure hash['night_action'][night] not nil
+        night_hash[SEER_END] = 'true'
+      else
+        raise MessagesHelper::SkillUseError.new("预言家技能发生错误")
+      end
+      hash.to_json
     end
 
     def witch_skill(hash, params)
-      logger = Logger.new(STDOUT)
       logger.info("=============== witch skill ====================")
       logger.info("#{hash}")
       logger.info("#{params}")
+      night = hash['night']
+
       raise MessagesHelper::SkillUseError.new("女巫技能发生错误")
     end
 
     def wolf_skill(hash, params)
-      logger = Logger.new(STDOUT)
-      logger.info("=============== wolf skill ====================")
-      logger.info("#{hash}")
-      logger.info("#{params}")
-      raise MessagesHelper::SkillUseError.new("狼人技能发生错误")
+      # logger.info("=============== wolf skill ====================")
+      # logger.info("#{hash}")
+      # logger.info("#{params}")
+      night = hash['night']
+      if params.include?(WOLF_KILL)
+        hash['night_actions'] ||= {}  # make sure hash['night_action'] not nil
+        night_hash = hash['night_actions'][night] ||= {} # make sure hash['night_action'][night] not nil
+        night_hash[WOLF_KILL] = params[WOLF_KILL]
+      else
+        raise MessagesHelper::SkillUseError.new("狼人技能发生错误")
+      end
+      hash.to_json
     end
 
     def defender_skill(hash, params)
-      logger = Logger.new(STDOUT)
-      logger.info("=============== defender skill ====================")
-      logger.info("#{hash}")
-      logger.info("#{params}")
+      # logger.info("=============== defender skill ====================")
+      # logger.info("#{hash}")
+      # logger.info("#{params}")
       night = hash['night']
-      if params.include?("defender_guard")
-        guard_seat = params["defender_guard"]
+      if params.include?(DEFENDER_GUARD)
+        tonight_guard = params[DEFENDER_GUARD]
         hash['night_actions'] ||= {}  # make sure hash['night_action'] not nil
         night_hash = hash['night_actions'][night] ||= {} # make sure hash['night_action'][night] not nil
-        night_hash[DEFENDER_GUARD] = guard_seat
+
+        previous_night = night.to_i - 1
+        if previous_night >= 1
+          last_night_guard = hash['night_actions'][previous_night.to_s][DEFENDER_GUARD]
+          if last_night_guard != 'not guard' && last_night_guard == tonight_guard
+            raise MessagesHelper::SkillUseError.new("不能两晚守护同一玩家: #{last_night_guard}")
+          end
+        end
+
+        night_hash[DEFENDER_GUARD] = tonight_guard
       else
         raise MessagesHelper::SkillUseError.new("守卫技能发生错误")
       end
@@ -244,7 +300,7 @@ class MessagesController < ApplicationController
         hash['seats'][seat.to_s]['user'] = 'EMPTY_SEAT_USER'
         hash['seats'][seat.to_s]['role'] = 'EMPTY_ROLE'
       else
-        raise Exception.new('Seat Already Taken')
+        raise MessagesHelper::MessageError.new('Seat Already Taken')
       end
       hash.to_json
     end
@@ -255,13 +311,17 @@ class MessagesController < ApplicationController
         hash['started'] = 'true'
         hash['master_user'] = user.username
         start_game_turns(hash)
+        hash['seer_check_display'] = '此处显示验证结果'
+        hash['witch_save_display'] = '此处显示刀型'
         hash['night'] = '1'
         hash['night_actions'] = {}
       else
         hash['started'] = 'false'
         hash['master_user'] = 'EMPTY_SEAT_USER'
         hash['turn'] = 'EMPTY_ROLE'
-        hash['turn_display'] = 'EMPTY_ROLE'
+        hash['turn_display'] = '游戏尚未开始'
+        hash['seer_check_display'] = '游戏尚未开始'
+        hash['witch_save_display'] = '游戏尚未开始'
         hash['night'] = '0'
         hash['night_actions'] = {}
       end
@@ -352,5 +412,49 @@ class MessagesController < ApplicationController
       end # end loop
 
       return 500
+    end
+
+    # Update game turn, decide what value in GAME_TURN need to be set in hash['turn']
+    def update_game_turn(hash)
+      room_included_turns = []
+      all_roles = hash['roles'].values
+      if all_roles.include?(THIEF) then room_included_turns.push(THIEF) end
+      if all_roles.include?(DEFENDER) then room_included_turns.push(DEFENDER) end
+      if all_roles.include?(SEER)
+        room_included_turns.push(SEER_CHECK_TURN, SEER_END_TURN)
+      end
+      if all_roles.include?(WHITEWOLF) || all_roles.include?(WEREWOLF)
+        room_included_turns.push(WOLF)
+      end
+      if all_roles.include?(WITCH) then room_included_turns.push(WITCH) end
+      room_included_turns.push(DAY_TIME)
+
+      current_turn_index = room_included_turns.index(hash['turn'])
+      if current_turn_index.nil?
+        raise MessagesHelper::SkillUseError.new("轮次异常 #{hash['turn']}不在游戏中")
+      end
+      turns_max_index = room_included_turns.size - 1
+      if current_turn_index < turns_max_index
+        current_turn_index += 1
+      end
+      next_turn = room_included_turns[current_turn_index]
+      hash['turn'] = next_turn
+      hash['turn_display'] = GAME_TURN_DISPLAY_MAP[next_turn]
+      hash.to_json
+    end
+
+    # Update witch save info
+    def update_witch_save_info(hash)
+      tonight = hash['night']
+      tonight_kill = hash['night_actions'][tonight][WOLF_KILL]
+
+      if hash.include?('drug_used') && hash['drug_used'] == 'true'
+        hash['witch_save_display'] = '解药已用 不显示刀型'
+      elsif tonight == 'not kill'
+        hash['witch_save_display'] = '今夜无人死亡'
+      else
+        hash['witch_save_display'] = "今夜死亡的是: #{tonight_kill}号"
+      end
+      hash.to_json
     end
 end

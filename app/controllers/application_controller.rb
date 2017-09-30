@@ -49,6 +49,7 @@ class ApplicationController < ActionController::Base
   DEFENDER_GUARD = "defender_guard"
   WOLF_KILL = "wolf_kill"
   SEER_CHECK = "seer_check"
+  SEER_END = "seer_end"
 
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]

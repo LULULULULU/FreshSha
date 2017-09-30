@@ -13,13 +13,7 @@
 <div class="row col-md-8 col-md-offset-2">
   <div id="topic-panel">
     <h1><%= @chatroom.topic %></h1><h5>  <%= link_to '删除房间', chatroom_path(@chatroom), method: :delete, data: { confirm: '确定删除房间?' }%></h5>
-    <h5 id="topic-panel-current-turn-h">
-      <%if @gameStarted %>
-        <%=@hash['turn_display']%>
-      <%else%>
-        游戏尚未开始
-      <%end%>
-    </h5>
+    <h5 id="topic-panel-current-turn-h"><%=@hash['turn_display']%></h5>
   </div>
 
   <% shrink = @gameStarted ? 'shrink' : '' %>

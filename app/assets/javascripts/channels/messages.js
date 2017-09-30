@@ -4,7 +4,6 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
   received: function(data) {
     $("#messages").removeClass('hidden')
     // console.log(data);
-    var gamedata = JSON.parse(data.message);
     var data_msg_id = data.id;
     var current_msg_id = parseInt(this.getCurrentMessageId());
 
@@ -13,8 +12,17 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
       previousdata = this.getCurrentRoomMessage();
       this.setCurrentRoomMessage(data.message)
 
+      // Update seats and Skill Panel
+      var gamedata = JSON.parse(data.message);
       var game_started = gamedata['started'] === 'true';
       this.updateSeats(gamedata, game_started);
+      this.updateSkillPanel(gamedata);
+
+      var tuple = getCurrentUserSeatNumberAndRole();
+      if (tuple) {
+        setSkillPanelByRole(tuple.role);
+      }
+
 
       return $('#messages').html(this.renderMessage(data));
     }
@@ -78,5 +86,10 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
         $("#seat-label-"+i).html(user+roleStr);
       }
     }
+  },
+
+  updateSkillPanel: function(data) {
+    $("#seer-check-info").html(data["seer_check_display"]);
+    $("#witch-save-info").html(data["witch_save_display"]);
   }
 });
