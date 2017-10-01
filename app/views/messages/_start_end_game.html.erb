@@ -2,5 +2,5 @@
   <%= f.hidden_field :chatroom_id, value: chatroom.id %>
   <%= f.hidden_field :message_id, value: message.id %>
   <%= f.hidden_field :user_name, value: user.username %>
-  <%= f.submit '开始/结束', class: "btn btn-warning", id: 'start-end-btn'%>
+  <%= f.submit '开始/结束', class: "btn btn-warning", id: 'start-end-btn', data: {confirm: '确定开始/结束游戏?'} %>
 <%end%>

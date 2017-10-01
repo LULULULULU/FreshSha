@@ -1,5 +1,5 @@
 <%=form_for @display_message, url: {action: :shuffle, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
   <%= f.hidden_field :message_id, value: @display_message.last.id %>
   <%= f.hidden_field :chatroom_id, value: @chatroom.id %>
-  <%= f.submit '重新发牌', class: "btn btn-danger", id: 'shuffle-roles', data: {confirm: 'Are you sure?'}%>
+  <%= f.submit '重新发牌', class: "btn btn-danger", id: 'shuffle-roles', data: {confirm: '确定重新发牌?'}%>
 <%end%>

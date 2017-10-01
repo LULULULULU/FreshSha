@@ -544,7 +544,7 @@ class MessagesController < ApplicationController
       if killed.size == 0
         hash['last_night_info_display'] = "昨夜是平安夜"
       else
-        hash['last_night_info_display'] = "昨夜死亡的有: #{killed.join('号,')}"
+        hash['last_night_info_display'] = "昨夜死亡的有: #{killed.join('号,')}号"
         # TODO: update seats => n => status
       end
       hash.to_json

@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 
 App.messages = App.cable.subscriptions.create('MessagesChannel', {
   received: function(data) {
@@ -25,6 +25,13 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
       } else {
         hideSkillIdentityPanels();
       }
+
+      // Update last night panel info
+      this.updateLastNightInfoPanel(gamedata, game_started);
+
+      // Update NavBarBtns
+      updateFooterNavBarBtns();
+
       return $('#messages').html(this.renderMessage(data));
     }
     console.log('Received msg<id='+ data_msg_id +'>, doesn\'t match current msg<id='+ current_msg_id +'>. Not updating room.');
@@ -80,20 +87,34 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
   updateSkillPanel: function(data) {
     $("#seer-check-info").html(data["seer_check_display"]);
     $("#witch-save-info").html(data["witch_save_display"]);
+  },
+
+  updateLastNightInfoPanel: function(data, game_started) {
+    if (game_started) {
+      if (data["last_night_info_display"]) {
+        $("#lasnightinfo-panel").html(data["last_night_info_display"]);
+      } else {
+        $("#lasnightinfo-panel").html("无昨夜信息");
+      }
+    }
+    else {
+      $("#lasnightinfo-panel").html("昨夜信息: 游戏尚未开始");
+    }
   }
 });
 
 $(document).on('turbolinks:load', function() {
-  console.log("In turbolinks:load");
   submitNewMessage();
   updateMessage();
   var panel = document.getElementById('info-panel');
   var skill_panel = document.getElementById('skill-panel');
   var identity_panel = document.getElementById('identity-panel');
+  var lasnightinfo_panel = document.getElementById('lasnightinfo-panel');
   if (!debug) {
     if (panel) {  panel.style.display = 'none'; }
     if (skill_panel) { skill_panel.style.display = 'none'; }
     if (identity_panel) { identity_panel.style.display = 'none'; }
+    if (lasnightinfo_panel) { lasnightinfo_panel.style.display = 'none'; }
   }
   if (hasMessageContent()) {
     var tuple = getCurrentUserSeatNumberAndRole();
@@ -103,17 +124,26 @@ $(document).on('turbolinks:load', function() {
     } else {
       hideSkillIdentityPanels();
     }
+    updateFooterNavBarBtns();
   }
-
-
 });
 
 function lastnightinfo() {
-  var panel = document.getElementById('info-panel');
-  if (panel.style.display === 'none') {
-      panel.style.display = 'block';
+  var lasnightinfo_panel = document.getElementById('lasnightinfo-panel');
+
+  if (lasnightinfo_panel.style.display === 'none') {
+      lasnightinfo_panel.style.display = 'block';
   } else {
+      lasnightinfo_panel.style.display = 'none';
+  }
+
+  if (debug) {
+    var panel = document.getElementById('info-panel');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+    } else {
       panel.style.display = 'none';
+    }
   }
 }
 
@@ -148,6 +178,8 @@ function useskill() {
 }
 
 
+function updateFooterNavBarBtns() {
+}
 
 function setIdentityPanelByRole(role) {
   var identity_panel = document.getElementById('identity-panel');

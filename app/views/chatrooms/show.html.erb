@@ -1,4 +1,4 @@
-<% @debugMode = true %>
+<% @debugMode = false %>
 <% @editMessage = false %>
 <% @gameStarted = (@hash['started'] == 'true') %>
 <div class="data-div" type=hidden>
@@ -26,6 +26,18 @@
   </div>
   <div id="skill-panel">
     <%= render partial: 'messages/skill', locals: {message: @display_message.last, user: @current_user, chatroom: @chatroom} %>
+  </div>
+
+  <div id="lasnightinfo-panel">
+    <% if @gameStarted %>
+      <% if @hash.include? 'last_night_info_display'%>
+        <%=@hash['last_night_info_display']%>
+      <% else %>
+        无昨夜信息
+      <% end %>
+    <% else %>
+    昨夜信息: 游戏尚未开始
+    <% end %>
   </div>
 
   <div class="panel panel-default" id="info-panel">
@@ -68,7 +80,7 @@
               <%= render partial: 'messages/start_end_game', locals: {message: @display_message.last, user: @current_user, chatroom: @chatroom} %>
             </div>
 
-            <div class="action-button-div">
+            <div class="action-button-div" id="shuffle-btn-div">
               <%= render partial: 'messages/shuffle' %>
             </div>
           </div>
