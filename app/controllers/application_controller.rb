@@ -6,6 +6,11 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :logged_in?
 
   # Rules constants
+  CURE_RULES = 'cure_rules'
+  POISON_RULE = 'poison_rule'
+  GUARD_RULE = 'guard_rule'
+  THIEF_RULE = 'thief_rule'
+
   FIRST_NIGHT_SAVE = 'FirstNightSave'
   NOT_SELF_SAVE = 'CannotSaveSelf'
   CAN_SELF_SAVE = 'CanSaveSelf'

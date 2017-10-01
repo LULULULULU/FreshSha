@@ -3,9 +3,6 @@
 
 <div id="seer-skill-panal">
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
-    <!-- =============================================================== -->
-    <!-- TODO: Update id="seer-check-info" in jQuery when receive message -->
-    <!-- =============================================================== -->
     <label class="form-check-label skill-info-label" id="seer-check-info">
     <%= @hash['seer_check_display']%>
     </label>
@@ -31,9 +28,6 @@
 
 
 <div id="witch-skill-panal" class="form-check form-check-inline">
-    <!-- =============================================================== -->
-    <!-- TODO: Update id="witch-save-info" in jQuery when receive message -->
-    <!-- =============================================================== -->
   <%=form_for Skill.new, url: {action: :skill, controller: :messages}, method: :post, remote: true, authenticity_token: true do |f|%>
     <label class="form-check-label skill-info-label" id="witch-save-info">
     <%= @hash['witch_save_display']%>
@@ -79,9 +73,6 @@
 </div>
 
 <div id="hunter-skill-panal" class="form-check form-check-inline">
-  <!-- =============================================================== -->
-  <!-- TODO: Update id="hunter-check-info" in jQuery when receive message -->
-  <!-- =============================================================== -->
   <label class="form-check-label skill-info-label" id="hunter-check-info">
     显示可否使用技能
   </label>
