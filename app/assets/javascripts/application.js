@@ -17,5 +17,4 @@
 //= require bootstrap-sprockets
 //= require bootstrap
 //= require_tree ./channels
-//= require chatrooms
 // require_tree .
