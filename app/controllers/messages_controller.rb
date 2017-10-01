@@ -349,12 +349,23 @@ class MessagesController < ApplicationController
     # toggle for user SIT and STAND actions
     def update_hash_sit(message, user, seat)
       hash = JSON.parse(message.content)
+      room_size = hash['room_size'].to_i
+
       if hash['seats'][seat.to_s]['user'] == 'EMPTY_SEAT_USER'
+        # If empty, stand up and sit
+        (1..room_size).each do |i|
+          if hash['seats'][i.to_s]['user'] == user.username
+            hash['seats'][i.to_s]['user'] = 'EMPTY_SEAT_USER'
+            hash['seats'][i.to_s]['role'] = 'EMPTY_ROLE'
+          end
+        end
         hash['seats'][seat.to_s]['user'] = user.username
       elsif hash['seats'][seat.to_s]['user'] == user.username
+        # if sit here, stand up
         hash['seats'][seat.to_s]['user'] = 'EMPTY_SEAT_USER'
         hash['seats'][seat.to_s]['role'] = 'EMPTY_ROLE'
       else
+        # if seat by other, exception
         raise MessagesHelper::MessageError.new('Seat Already Taken')
       end
       hash.to_json

@@ -79,10 +79,18 @@ App.messages = App.cable.subscriptions.create('MessagesChannel', {
       if (user === 'EMPTY_SEAT_USER') {
         $("#seat-"+i).addClass("btn-success");
         $("#seat-"+i).removeClass("btn-outline-success-luwu");
+        $("#seat-"+i).removeClass("btn-warning");
         $("#seat-label-"+i).html('空'+roleStr);
+      }
+      else if (user === this.getCurrentUserName()) {
+        $("#seat-"+i).addClass("btn-warning");
+        $("#seat-"+i).removeClass("btn-success");
+        $("#seat-"+i).removeClass("btn-outline-success-luwu");
+        $("#seat-label-"+i).html(user+roleStr);
       } else {
         $("#seat-"+i).addClass("btn-outline-success-luwu");
         $("#seat-"+i).removeClass("btn-success");
+        $("#seat-"+i).removeClass("btn-warning");
         $("#seat-label-"+i).html(user+roleStr);
       }
     }

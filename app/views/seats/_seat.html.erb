@@ -1,5 +1,14 @@
 <div class="seat-box">
 <% disabled = @gameStarted ? 'disabled' : '' %>
+<%
+if seat.user == 'EMPTY_SEAT_USER'
+  seat_btn_class = 'btn-success'
+elsif seat.user == @current_user.username
+  seat_btn_class = 'btn-warning'
+else
+  seat_btn_class = 'btn-outline-success-luwu'
+end
+%>
 
 <label id="seat-label-<%=seat.number%>" class="seat-label">
     <% if seat.user == 'EMPTY_SEAT_USER' %>空<%else%><%=seat.user%><%end%>
@@ -12,10 +21,6 @@
   <%= f.hidden_field :seat_user, value: seat.user %>
   <%= f.hidden_field :chatroom_id, value: @chatroom.id %>
   <%= f.hidden_field :message_id, value: @display_message.last.id %>
-  <% if seat.user == 'EMPTY_SEAT_USER' %>
-  <%= f.submit "#{seat.number}", class: "btn btn-success seat-btn #{disabled}", id: "seat-#{seat.number}", data: {send: "sit"}, disabled: disabled=='disabled' %>
-  <%else%>
-  <%= f.submit "#{seat.number}", class: "btn btn-outline-success-luwu seat-btn #{disabled}", id: "seat-#{seat.number}", data: {send: "sit"}, disabled: disabled=='disabled' %>
-  <%end%>
+  <%= f.submit "#{seat.number}", class: "btn #{seat_btn_class} seat-btn-position #{disabled}", id: "seat-#{seat.number}", data: {send: "sit"}, disabled: disabled=='disabled' %>
 <%end%>
 </div>
