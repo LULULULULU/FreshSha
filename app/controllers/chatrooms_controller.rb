@@ -73,11 +73,13 @@ class ChatroomsController < ApplicationController
     @current_user = current_user
     @message = Message.new
 
-    hash = JSON.parse(@display_message.last.content)
-    # logger.info("=============== In show ====================")
-    # logger.info("#{hash['seats']}")
-    @seats = build_seats_array(hash['seats'], hash['room_size'].to_i)
-    # logger.info("#{@seats.to_s}")
+    begin
+      @hash = JSON.parse(@display_message.last.content)
+      @seats = build_seats_array(hash['seats'], hash['room_size'].to_i)
+    rescue JSON::ParserError
+      @hash = {}
+      @seats = []
+    end
   end
 
   def destroy

@@ -1,6 +1,5 @@
 <% @debugMode = true %>
 <% @editMessage = false %>
-<% @hash = JSON.parse(@display_message.last.content) %>
 <% @gameStarted = (@hash['started'] == 'true') %>
 <div class="data-div" type=hidden>
   <%= render partial: 'messages/message_data', locals: {current_message: @display_message, this_user: @current_user}%>
