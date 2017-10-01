@@ -25,35 +25,30 @@ class ChatroomsController < ApplicationController
   def create
     # logger.info("=============== In create ====================")
     # logger.info("#{params.as_json}")
-    message_content = build_first_message(params[:chatroom])
-    # logger.info("#{message_content}")
-    if chatroom_params['topic'].strip == "new"
-      respond_to do |format|
-        flash[:notice] = {ERROR: ["new不是一个合法的名字 GG"]}
-        format.html { redirect_to new_chatroom_path }
-        format.js { render template: 'chatrooms/chatroom_error.js.erb'}
+    begin
+      message_content = build_first_message(params[:chatroom])
+      # logger.info("#{message_content}")
+      if chatroom_params['topic'].strip == "new"
+        raise ChatroomsHelper::ChatroomCreateError.new("new不是一个合法的名字 GG")
       end
-      return
-    end
-    @chatroom = Chatroom.new(chatroom_params)
-    if @chatroom.save
-      user = User.find_by(:id => 1)
-      message = Message.new(:chatroom_id => @chatroom.id, :user => user, :content => message_content)
-      if message.save
-        respond_to do |format|
-          format.html { redirect_to @chatroom }
-          format.js
+      @chatroom = Chatroom.new(chatroom_params)
+      if @chatroom.save
+        user = User.find_by(:id => 1)
+        message = Message.new(:chatroom_id => @chatroom.id, :user => user, :content => message_content)
+        if message.save
+          respond_to do |format|
+            format.html { redirect_to @chatroom }
+            format.js
+          end
+        else
+          raise ChatroomsHelper::ChatroomCreateError.new("创建房间失败 GG")
         end
       else
-        respond_to do |format|
-          flash[:notice] = {ERROR: ["创建房间失败 GG"]}
-          format.html { redirect_to new_chatroom_path }
-          format.js { render template: 'chatrooms/chatroom_error.js.erb'}
-        end
+        raise ChatroomsHelper::ChatroomCreateError.new("房名空或已存在 GG")
       end
-    else
+    rescue ChatroomsHelper::ChatroomCreateError => error
       respond_to do |format|
-        flash[:notice] = {ERROR: ["房名空或已存在 GG"]}
+        flash[:notice] = {ERROR: ["#{error.message}"]}
         format.html { redirect_to new_chatroom_path }
         format.js { render template: 'chatrooms/chatroom_error.js.erb'}
       end
@@ -75,7 +70,7 @@ class ChatroomsController < ApplicationController
 
     begin
       @hash = JSON.parse(@display_message.last.content)
-      @seats = build_seats_array(hash['seats'], hash['room_size'].to_i)
+      @seats = build_seats_array(@hash['seats'], @hash['room_size'].to_i)
     rescue JSON::ParserError
       @hash = {}
       @seats = []
@@ -122,6 +117,10 @@ class ChatroomsController < ApplicationController
       werewolf = params[:werewolf].to_i
 
       room_size = seer + witch + hunter + defender + thief + elder + villager + whitewolf + werewolf
+
+      if room_size <= 0
+        raise ChatroomsHelper::ChatroomCreateError.new("至少要有一个角色")
+      end
       if thief >= 1
         room_size -= 2
       end
